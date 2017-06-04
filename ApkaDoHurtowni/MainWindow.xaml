@@ -1,0 +1,18 @@
+﻿<Window x:Class="ApkaDoHurtowni.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ApkaDoHurtowni"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="522.5" Width="1042.576">
+    <Grid>
+        <TextBox x:Name="tbOutput" HorizontalAlignment="Left" Height="114" Margin="28,215,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241"/>
+        <Button x:Name="testBtn" Content="Lista kostek" HorizontalAlignment="Left" Height="35" Margin="28,23,0,0" VerticalAlignment="Top" Width="102" Click="testBtn_Click"/>
+        <Button x:Name="mdxBtn" Content="Przykładowe zapytanie" HorizontalAlignment="Left" Height="44" Margin="337,35,0,0" VerticalAlignment="Top" Width="173" Click="mdxBtn_Click"/>
+        <DataGrid x:Name="dataGrid1" HorizontalAlignment="Left" Margin="361,193,0,0" VerticalAlignment="Top" Height="288" Width="664" AutoGenerateColumns="True" ItemsSource="{Binding ResultTable}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" IsReadOnly="True" CanUserReorderColumns="False" CanUserSortColumns="False"/>
+        <Button x:Name="mdx2Btn" Content="Zapytanie bez nulla" HorizontalAlignment="Left" Margin="337,114,0,0" VerticalAlignment="Top" Width="173" Height="39" Click="mdx2Btn_Click"/>
+        <Button x:Name="mdx3Btn" Content="Zapytanie z nullem" HorizontalAlignment="Left" Margin="556,114,0,0" VerticalAlignment="Top" Width="219" Height="39" Click="mdx3Btn_Click"/>
+
+    </Grid>
+</Window>
