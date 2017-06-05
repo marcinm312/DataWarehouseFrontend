@@ -27,10 +27,10 @@ namespace ApkaDoHurtowni
         {
             InitializeComponent();
         }
-        void wypisz(string text)
+        /*void wypisz(string text)
         {
             tbOutput.AppendText(text + "\r\n");
-        }
+        }*/
         void zapytanieDoTabeli(string query)
         {
             AdomdCommand cmd = new AdomdCommand(query, connection);
@@ -62,38 +62,12 @@ namespace ApkaDoHurtowni
             //dataGrid1.ItemsSource = dataSet.Tables[0].DefaultView;
             dataGrid1.ItemsSource = table.DefaultView;
         }
-        private void testBtn_Click(object sender, RoutedEventArgs e)
-        {
-            wypisz("Lista kostek:");
-            connection.Open();
-            foreach (CubeDef def in connection.Cubes)
-            {
-                wypisz(def.Type + "\t" + def.Name);
-            }
-            connection.Close();
-        }
 
         private void mdxBtn_Click(object sender, RoutedEventArgs e)
         {
             connection.Open();
-            string query = "with member measures.TotalSales as '[Measures].[Quantity] * [Measures].[Unit Price]' select {[Measures].[Order Details Count], measures.TotalSales} on columns, {[Products].[Company Name].Members} on rows from[Order_Products_Suppl]";
-            AdomdCommand cmd = new AdomdCommand(query, connection);
-            CellSet cellset = cmd.ExecuteCellSet();
-            Cell cell = null;
-            int countOnAxis0 = cellset.Axes[0].Positions.Count;
-            int countOnAxis1 = cellset.Axes[1].Positions.Count;
-            for (int i0 = 0; i0 < countOnAxis0; i0++)
-            {
-                for (int i1 = 0; i1 < countOnAxis1; i1++)
-                {
-                    cell = cellset.Cells[i0, i1];
-                    wypisz("(" + cellset.Axes[0].Positions[i0].Members[0].Name
-                    + " ,"
-                    + cellset.Axes[1].Positions[i1].Members[0].Name
-                    + ") :\t"
-                    + cell.FormattedValue);
-                }
-            }
+            string query = tbInput.Text;
+            zapytanieDoTabeli(query);
             connection.Close();
         }
 
