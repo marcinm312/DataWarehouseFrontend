@@ -5,16 +5,55 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ApkaDoHurtowni"
         mc:Ignorable="d"
-        Title="Aplikacja do hurtowni danych" Height="650" Width="1300" ResizeMode="CanMinimize">
+        Title="Aplikacja do hurtowni danych" Height="700" Width="1112" ResizeMode="CanMinimize">
     <Window.Background>
         <SolidColorBrush Color="#FFF0F0F0"/>
     </Window.Background>
     <Grid>
-        <Button x:Name="mdxBtn" Content="Wykonaj zapytanie MDX" HorizontalAlignment="Left" Height="44" Margin="10,118,0,0" VerticalAlignment="Top" Width="173" Click="mdxBtn_Click"/>
-        <DataGrid x:Name="dataGrid1" HorizontalAlignment="Left" Margin="514,333,0,0" VerticalAlignment="Top" Height="278" Width="770" AutoGenerateColumns="True" ItemsSource="{Binding ResultTable}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" IsReadOnly="True" CanUserReorderColumns="False" CanUserSortColumns="False"/>
-        <Button x:Name="mdx2Btn" Content="Zapytanie bez nulla" HorizontalAlignment="Left" Margin="514,74,0,0" VerticalAlignment="Top" Width="173" Height="39" Click="mdx2Btn_Click"/>
-        <Button x:Name="mdx3Btn" Content="Zapytanie z nullem" HorizontalAlignment="Left" Margin="722,74,0,0" VerticalAlignment="Top" Width="219" Height="39" Click="mdx3Btn_Click"/>
-        <TextBox x:Name="tbInput" HorizontalAlignment="Left" Height="103" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="370" ScrollViewer.CanContentScroll="True" UndoLimit="2000" VerticalScrollBarVisibility="Auto" AcceptsReturn="True"/>
+        <Button x:Name="mdxBtn" Content="Wykonaj powyższe zapytanie MDX" HorizontalAlignment="Left" Height="32" Margin="882,158,0,0" VerticalAlignment="Top" Width="211" Click="mdxBtn_Click" RenderTransformOrigin="0.855,0.955"/>
+        <DataGrid x:Name="dataGrid1" HorizontalAlignment="Left" Margin="10,383,0,0" VerticalAlignment="Top" Height="278" Width="1078" AutoGenerateColumns="True" ItemsSource="{Binding ResultTable}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" IsReadOnly="True" CanUserReorderColumns="False" CanUserSortColumns="False"/>
+        <TextBox x:Name="tbInput" HorizontalAlignment="Left" Height="121" Margin="771,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="322" ScrollViewer.CanContentScroll="True" UndoLimit="2000" VerticalScrollBarVisibility="Auto" AcceptsReturn="True"/>
+        <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="368" Margin="10,10,0,0" VerticalAlignment="Top" Width="756">
+            <TabItem Header="Analiza dostawców">
+                <Grid Background="White">
+                    <Button x:Name="btnDost1" Content="Ilość, cena jednostkowa i łączna cena wszystkich marek produktów" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="435" Click="btnDost1_Click" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btnDost2" Content="Ilość, cena jednostkowa i łączna cena wszystkich gatunków produktów" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="435" Click="btnDost2_Click" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btnDost3" Content="Ilość i łączna cena produktów z danej kategorii" HorizontalAlignment="Left" Margin="156,94,0,0" VerticalAlignment="Top" Width="289" Height="22" Click="btnDost3_Click" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btnDost4" Content="Ilość sprzedanych zamówien i cena z podziałem na dostawców" HorizontalAlignment="Left" Margin="10,131,0,0" VerticalAlignment="Top" Width="435" Click="btnDost4_Click" Grid.ColumnSpan="2"/>
+                    <ComboBox x:Name="comboCategory" HorizontalAlignment="Left" Margin="10,94,0,0" VerticalAlignment="Top" Width="120">
+                        <ComboBoxItem Content="Seafood" IsSelected="True"/>
+                        <ComboBoxItem Content="Produce"/>
+                        <ComboBoxItem Content="Meat/Poultry"/>
+                        <ComboBoxItem Content="Grains/Cereals"/>
+                        <ComboBoxItem Content="Dairy Products"/>
+                        <ComboBoxItem Content="Confections"/>
+                        <ComboBoxItem Content="Condiments"/>
+                        <ComboBoxItem Content="Beverages"/>
+                    </ComboBox>
+                    <Label x:Name="label" Content="Wybierz kategorię:" HorizontalAlignment="Left" Margin="10,65,0,0" VerticalAlignment="Top" Height="29" Width="118"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Analiza sprzedaży">
+                <Grid Background="White">
+                    <Button x:Name="btnSprz1" Content="Ile każdy pracownik sprzedał łącznie?" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="381" Click="btnSprz1_Click"/>
+                    <Button x:Name="btnSprz2" Content="Ile każdy pracownik sprzedał poszczególnym firmom?" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="381" Click="btnSprz2_Click"/>
+                    <Button x:Name="btnSprz3" Content="Ile produktów z danej kategorii kupiła dana firma z danego miasta?" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="381" Click="btnSprz3_Click"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Analiza kosztów dostawców">
+                <Grid Background="White">
+                    <Button x:Name="btnKoszt1" Content="Ilość produktów zamówionych od poszczególnych dostawców dla poszczególnych klientów z podziałem na kwartały" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="641" RenderTransformOrigin="-0.96,-0.7" Click="btnKoszt1_Click"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Analiza produktów">
+                <Grid Background="White">
+                    <Label x:Name="label1" Content="Czy brać pod uwagę produkty wycofane?" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.684,1.654" Grid.ColumnSpan="2"/>
+                    <RadioButton x:Name="radioTak" Content="Tak" HorizontalAlignment="Left" Margin="21,41,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.833,-0.8" GroupName="wycofane" Grid.ColumnSpan="2" IsChecked="True"/>
+                    <RadioButton x:Name="radioNie" Content="Nie" HorizontalAlignment="Left" Margin="84,41,0,0" VerticalAlignment="Top" GroupName="wycofane" RenderTransformOrigin="2.649,0.867"/>
+                    <Button x:Name="btnProd1" Content="Produkty, ich ilość i ceny oraz przypisani do nich dostawcy i klienci, którzy je zakupili" HorizontalAlignment="Left" Margin="194,36,0,0" VerticalAlignment="Top" Width="476" Height="20" Click="btnProd1_Click"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
 
     </Grid>
 </Window>
