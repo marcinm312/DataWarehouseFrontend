@@ -16,10 +16,10 @@
         <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="368" Margin="10,10,0,0" VerticalAlignment="Top" Width="756">
             <TabItem Header="Analiza dostawców">
                 <Grid Background="White">
-                    <Button x:Name="btnDost1" Content="Ilość, cena jednostkowa i łączna cena wszystkich marek produktów" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="435" Click="btnDost1_Click" Grid.ColumnSpan="2"/>
-                    <Button x:Name="btnDost2" Content="Ilość, cena jednostkowa i łączna cena wszystkich gatunków produktów" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="435" Click="btnDost2_Click" Grid.ColumnSpan="2"/>
-                    <Button x:Name="btnDost3" Content="Ilość i łączna cena produktów z danej kategorii" HorizontalAlignment="Left" Margin="156,94,0,0" VerticalAlignment="Top" Width="289" Height="22" Click="btnDost3_Click" Grid.ColumnSpan="2"/>
-                    <Button x:Name="btnDost4" Content="Ilość sprzedanych zamówien i cena z podziałem na dostawców" HorizontalAlignment="Left" Margin="10,131,0,0" VerticalAlignment="Top" Width="435" Click="btnDost4_Click" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btnDost1" Content="Wartość sprzedaży poszczególnych produktów" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="488" Click="btnDost1_Click"/>
+                    <Button x:Name="btnDost2" Content="Wartość sprzedaży poszczególnych grup produktów" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="488" Click="btnDost2_Click"/>
+                    <Button x:Name="btnDost3" Content="Wartość sprzedaży wybranej grupy produktów" HorizontalAlignment="Left" Margin="156,94,0,0" VerticalAlignment="Top" Width="342" Height="22" Click="btnDost3_Click"/>
+                    <Button x:Name="btnDost4" Content="Wartość sprzedaży produktów pochodzących od poszczególnych dostawców" HorizontalAlignment="Left" Margin="10,131,0,0" VerticalAlignment="Top" Width="488" Click="btnDost4_Click"/>
                     <ComboBox x:Name="comboCategory" HorizontalAlignment="Left" Margin="10,94,0,0" VerticalAlignment="Top" Width="120">
                         <ComboBoxItem Content="Seafood" IsSelected="True"/>
                         <ComboBoxItem Content="Produce"/>
@@ -35,22 +35,62 @@
             </TabItem>
             <TabItem Header="Analiza sprzedaży">
                 <Grid Background="White">
-                    <Button x:Name="btnSprz1" Content="Ile każdy pracownik sprzedał łącznie?" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="381" Click="btnSprz1_Click"/>
-                    <Button x:Name="btnSprz2" Content="Ile każdy pracownik sprzedał poszczególnym firmom?" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="381" Click="btnSprz2_Click"/>
-                    <Button x:Name="btnSprz3" Content="Ile produktów z danej kategorii kupiła dana firma z danego miasta?" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="381" Click="btnSprz3_Click"/>
+                    <Rectangle HorizontalAlignment="Left" Height="100" Margin="10,201,0,0" Stroke="Black" VerticalAlignment="Top" Width="400"/>
+                    <Rectangle HorizontalAlignment="Left" Height="100" Margin="327,45,0,0" Stroke="Black" VerticalAlignment="Top" Width="372"/>
+                    <Rectangle HorizontalAlignment="Left" Height="100" Margin="10,45,0,0" Stroke="Black" VerticalAlignment="Top" Width="303"/>
+                    <Button x:Name="btnSprz1" Content="Ile sztuk towarów sprzedał każdy pracownik?" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="381" Click="btnSprz1_Click"/>
+                    <Button x:Name="btnSprz2" Content="Ile sztuk towarów sprzedał każdy pracownik poszczególnym klientom?" HorizontalAlignment="Left" Margin="10,161,0,0" VerticalAlignment="Top" Width="381" Click="btnSprz2_Click"/>
+                    <Button x:Name="btnSprz3" Content="Ile produktów poszczegolnych kategorii kupili klienci z danego miasta?" HorizontalAlignment="Left" Margin="10,310,0,0" VerticalAlignment="Top" Width="381" Click="btnSprz3_Click"/>
+                    <Label x:Name="label4" Content="Wyświetl pracowników, którzy sprzedali" Margin="20,45,456,268"/>
+                    <ComboBox x:Name="comboMniejWiecej1" HorizontalAlignment="Left" Margin="20,77,0,0" VerticalAlignment="Top" Width="120">
+                        <ComboBoxItem Content="Powyżej" IsSelected="True"/>
+                        <ComboBoxItem Content="Poniżej"/>
+                    </ComboBox>
+                    <TextBox x:Name="tbSztuki" HorizontalAlignment="Left" Height="22" Margin="158,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96" RenderTransformOrigin="-0.267,0.391"/>
+                    <Label x:Name="label5" Content="sztuk." HorizontalAlignment="Left" Margin="259,73,0,0" VerticalAlignment="Top" Height="26"/>
+                    <Button x:Name="btnSprz1_1" Content="Wykonaj" HorizontalAlignment="Left" Margin="20,113,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-2.787,0.5" Click="btnSprz1_1_Click"/>
+                    <Label x:Name="label6" Content="Wyświetl pracowników, którzy sprzedali najmniej bądź najwięcej." HorizontalAlignment="Left" Margin="335,45,0,0" VerticalAlignment="Top" RenderTransformOrigin="1,-0.5" Width="355"/>
+                    <ComboBox x:Name="comboLepsiGorsi1" HorizontalAlignment="Left" Margin="335,77,0,0" VerticalAlignment="Top" Width="120">
+                        <ComboBoxItem Content="Najlepsi" IsSelected="True"/>
+                        <ComboBoxItem Content="Najgorsi"/>
+                    </ComboBox>
+                    <Label x:Name="label7" Content="Ilość rekordów:" HorizontalAlignment="Left" Margin="477,77,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="tbRekordy1" HorizontalAlignment="Left" Height="22" Margin="572,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="106"/>
+                    <Button x:Name="btnSprz1_2" Content="Wykonaj" HorizontalAlignment="Left" Margin="335,113,0,0" VerticalAlignment="Top" Width="75" Click="btnSprz1_2_Click"/>
+                    <Label x:Name="label8" Content="Wyświetl firmy, którym sprzedano najwięcej bądź najmniej towarów." HorizontalAlignment="Left" Margin="20,201,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.053,-0.115"/>
+                    <ComboBox x:Name="comboMniejWiecej2" HorizontalAlignment="Left" Margin="20,232,0,0" VerticalAlignment="Top" Width="120">
+                        <ComboBoxItem Content="Najwięcej" IsSelected="True"/>
+                        <ComboBoxItem Content="Najmniej"/>
+                    </ComboBox>
+                    <Label x:Name="label7_Copy" Content="Ilość rekordów:" HorizontalAlignment="Left" Margin="173,232,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="tbRekordy2" HorizontalAlignment="Left" Height="23" Margin="271,232,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="118"/>
+                    <Button x:Name="btnSprz2_1" Content="Wykonaj" HorizontalAlignment="Left" Margin="20,268,0,0" VerticalAlignment="Top" Width="75" Click="btnSprz2_1_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Analiza kosztów dostawców">
                 <Grid Background="White">
-                    <Button x:Name="btnKoszt1" Content="Ilość produktów zamówionych od poszczególnych dostawców dla poszczególnych klientów z podziałem na kwartały" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="641" RenderTransformOrigin="-0.96,-0.7" Click="btnKoszt1_Click"/>
+                    <Button x:Name="btnKoszt1" Content="Koszty dostawy do poszczególnych klientów" HorizontalAlignment="Left" Margin="14,145,0,0" VerticalAlignment="Top" Width="383" RenderTransformOrigin="-0.96,-0.7" Click="btnKoszt1_Click"/>
+                    <Label x:Name="label2" Content="Rok:" HorizontalAlignment="Left" Margin="11,48,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.526,-0.423"/>
+                    <Label x:Name="label2_Copy" Content="Kwartał:" HorizontalAlignment="Left" Margin="11,75,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.526,-0.423"/>
+                    <Label x:Name="label2_Copy1" Content="Miesiąc:" HorizontalAlignment="Left" Margin="11,102,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.526,-0.423"/>
+                    <ComboBox x:Name="comboYear" HorizontalAlignment="Left" Margin="106,44,0,0" VerticalAlignment="Top" Width="155" DropDownClosed="comboYear_DropDownClosed">
+                        <ComboBoxItem Content="Wszystkie lata" IsSelected="True"/>
+                        <ComboBoxItem Content="1996"/>
+                        <ComboBoxItem Content="1997"/>
+                        <ComboBoxItem Content="1998"/>
+                    </ComboBox>
+                    <ComboBox x:Name="comboMonth" HorizontalAlignment="Left" Margin="106,98,0,0" VerticalAlignment="Top" Width="155" RenderTransformOrigin="0.45,3.455"/>
+                    <ComboBox x:Name="comboQuarter" HorizontalAlignment="Left" Margin="106,71,0,0" VerticalAlignment="Top" Width="155" RenderTransformOrigin="0.475,2.182" DropDownClosed="comboQuarter_DropDownClosed"/>
+                    <Label x:Name="label3" Content="Określ okres, dla którego chcesz wykonać analizę:" HorizontalAlignment="Left" Height="29" Margin="11,10,0,0" VerticalAlignment="Top" Width="414"/>
+                    <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="14,194,0,0" TextWrapping="Wrap" Text="Uwaga! Jeżeli tabela z danymi się nie pokazuje, należy wybrać inny przedział czasu. Jest to spowodowane brakiem danych w bazie." VerticalAlignment="Top" Height="58" Width="383" FontWeight="Bold" Foreground="Red"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Analiza produktów">
                 <Grid Background="White">
-                    <Label x:Name="label1" Content="Czy brać pod uwagę produkty wycofane?" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.684,1.654" Grid.ColumnSpan="2"/>
-                    <RadioButton x:Name="radioTak" Content="Tak" HorizontalAlignment="Left" Margin="21,41,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.833,-0.8" GroupName="wycofane" Grid.ColumnSpan="2" IsChecked="True"/>
-                    <RadioButton x:Name="radioNie" Content="Nie" HorizontalAlignment="Left" Margin="84,41,0,0" VerticalAlignment="Top" GroupName="wycofane" RenderTransformOrigin="2.649,0.867"/>
-                    <Button x:Name="btnProd1" Content="Produkty, ich ilość i ceny oraz przypisani do nich dostawcy i klienci, którzy je zakupili" HorizontalAlignment="Left" Margin="194,36,0,0" VerticalAlignment="Top" Width="476" Height="20" Click="btnProd1_Click"/>
+                    <Label x:Name="label1" Content="Brać pod uwagę produkty, które są nadal produkowane, czy te wycofane?" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.684,1.654" Grid.ColumnSpan="2"/>
+                    <RadioButton x:Name="radioWycofane" Content="Produkty wycofane" HorizontalAlignment="Left" Margin="241,44,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.833,-0.8" GroupName="wycofane" IsChecked="True"/>
+                    <RadioButton x:Name="radioProdukowane" Content="Produkty będące nadal w produkcji" HorizontalAlignment="Left" Margin="19,44,0,0" VerticalAlignment="Top" GroupName="wycofane" RenderTransformOrigin="2.649,0.867" IsChecked="True"/>
+                    <Button x:Name="btnProd1" Content="Stany magazynowe produktów" HorizontalAlignment="Left" Margin="19,78,0,0" VerticalAlignment="Top" Width="285" Height="20" Click="btnProd1_Click"/>
                 </Grid>
             </TabItem>
         </TabControl>
