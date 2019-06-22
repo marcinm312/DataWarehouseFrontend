@@ -82,6 +82,7 @@ namespace ApkaDoHurtowni
         }*/
         void zapytanieDoTabeli(string query)
         {
+            tbInput.Text = query;
             AdomdCommand cmd = new AdomdCommand(query, connection);
             DataSet dataSet = new DataSet();
             dataSet.EnforceConstraints = true;
