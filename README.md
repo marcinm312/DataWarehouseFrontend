@@ -1,4 +1,4 @@
-# DataWarehouseFrontend
+# Aplikacja frontend dla hurtowni danych
 
 Jest to aplikacja, z graficznym interfejsem użytkownika, wywołująca zapytania MDX do hurtowni danych zbudowanej w technologii Microsoft SQL Server Analysis Services. Wyniki zapytania prezentowane są w tabeli.
 
