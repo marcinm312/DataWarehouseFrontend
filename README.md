@@ -1,4 +1,4 @@
-# Aplikacja frontend dla hurtowni danych
+# Aplikacja frontend dla hurtowni danych MS Analysis Services
 
 Jest to aplikacja, z graficznym interfejsem użytkownika, wywołująca zapytania MDX do hurtowni danych zbudowanej w technologii Microsoft SQL Server Analysis Services. Wyniki zapytania prezentowane są w tabeli.
 
