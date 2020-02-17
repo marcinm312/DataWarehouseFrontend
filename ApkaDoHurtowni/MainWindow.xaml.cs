@@ -22,6 +22,7 @@ namespace ApkaDoHurtowni
     /// </summary>
     public partial class MainWindow : Window
     {
+        //AdomdConnection connection = new AdomdConnection("DataSource=localhost\\MSSQLSERVER2; Catalog=ProjektNaHurtownieNorthwind");
         AdomdConnection connection = new AdomdConnection("DataSource=localhost; Catalog=ProjektNaHurtownieNorthwind");
 
         ComboBoxItem allQuarters = new ComboBoxItem();
