@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.AnalysisServices.AdomdClient;
 using System.Data;
 
@@ -22,33 +12,34 @@ namespace ApkaDoHurtowni
     /// </summary>
     public partial class MainWindow : Window
     {
-        //AdomdConnection connection = new AdomdConnection("DataSource=localhost\\MSSQLSERVER2; Catalog=ProjektNaHurtownieNorthwind");
-        AdomdConnection connection = new AdomdConnection("DataSource=localhost; Catalog=ProjektNaHurtownieNorthwind");
+        private readonly AdomdConnection connection;
 
-        ComboBoxItem allQuarters = new ComboBoxItem();
-        ComboBoxItem quarter1 = new ComboBoxItem();
-        ComboBoxItem quarter2 = new ComboBoxItem();
-        ComboBoxItem quarter3 = new ComboBoxItem();
-        ComboBoxItem quarter4 = new ComboBoxItem();
+        private readonly ComboBoxItem allQuarters = new ComboBoxItem();
+        private readonly ComboBoxItem quarter1 = new ComboBoxItem();
+        private readonly ComboBoxItem quarter2 = new ComboBoxItem();
+        private readonly ComboBoxItem quarter3 = new ComboBoxItem();
+        private readonly ComboBoxItem quarter4 = new ComboBoxItem();
 
-        ComboBoxItem allMonths = new ComboBoxItem();
-        ComboBoxItem allMonthsQuarter = new ComboBoxItem();
-        ComboBoxItem january = new ComboBoxItem();
-        ComboBoxItem february = new ComboBoxItem();
-        ComboBoxItem march = new ComboBoxItem();
-        ComboBoxItem april = new ComboBoxItem();
-        ComboBoxItem may = new ComboBoxItem();
-        ComboBoxItem june = new ComboBoxItem();
-        ComboBoxItem july = new ComboBoxItem();
-        ComboBoxItem august = new ComboBoxItem();
-        ComboBoxItem september = new ComboBoxItem();
-        ComboBoxItem october = new ComboBoxItem();
-        ComboBoxItem november = new ComboBoxItem();
-        ComboBoxItem december = new ComboBoxItem();
+        private readonly ComboBoxItem allMonths = new ComboBoxItem();
+        private readonly ComboBoxItem allMonthsQuarter = new ComboBoxItem();
+        private readonly ComboBoxItem january = new ComboBoxItem();
+        private readonly ComboBoxItem february = new ComboBoxItem();
+        private readonly ComboBoxItem march = new ComboBoxItem();
+        private readonly ComboBoxItem april = new ComboBoxItem();
+        private readonly ComboBoxItem may = new ComboBoxItem();
+        private readonly ComboBoxItem june = new ComboBoxItem();
+        private readonly ComboBoxItem july = new ComboBoxItem();
+        private readonly ComboBoxItem august = new ComboBoxItem();
+        private readonly ComboBoxItem september = new ComboBoxItem();
+        private readonly ComboBoxItem october = new ComboBoxItem();
+        private readonly ComboBoxItem november = new ComboBoxItem();
+        private readonly ComboBoxItem december = new ComboBoxItem();
 
         public MainWindow()
         {
             InitializeComponent();
+
+            connection = ReadConnectionFromFile();
 
             allQuarters.Content = "Wszystkie kwartaly";
             allQuarters.IsSelected = true;
@@ -57,7 +48,7 @@ namespace ApkaDoHurtowni
             quarter3.Content = "Quarter 3";
             quarter4.Content = "Quarter 4";
 
-            comboQuarter.Items.Add(allQuarters);
+            QuarterComboBox.Items.Add(allQuarters);
 
             allMonths.Content = "Wszystkie miesiace";
             allMonths.IsSelected = true;
@@ -75,56 +66,81 @@ namespace ApkaDoHurtowni
             november.Content = "November";
             december.Content = "December";
 
-            comboMonth.Items.Add(allMonths);
+            MonthComboBox.Items.Add(allMonths);
         }
-        /*void wypisz(string text)
+
+        private AdomdConnection ReadConnectionFromFile()
         {
-            tbOutput.AppendText(text + "\r\n");
-        }*/
-        void zapytanieDoTabeli(string query)
-        {
-            tbInput.Text = query;
-            AdomdCommand cmd = new AdomdCommand(query, connection);
-            DataSet dataSet = new DataSet();
-            dataSet.EnforceConstraints = true;
-            DataTable dt = new DataTable();
-            //CellSet objCellSet = cmd.ExecuteCellSet();
+            string connectionString = "";
+            AdomdConnection connection = null;
             try
             {
-                dt.Load(cmd.ExecuteReader());
-            }
-            catch (Exception exc)
-            {
-
-            }
-            dataSet.Tables.Add(dt);
-            var table = dataSet.Tables[0];
-            dataGrid1.Columns.Clear();
-            dataGrid1.AutoGenerateColumns = false;
-            foreach (DataColumn dataColumn in dataSet.Tables[0].Columns)
-            {
-                dataGrid1.Columns.Add(new DataGridTextColumn
+                string fileContent = System.IO.File.ReadAllText("Connection.txt");
+                if (fileContent != null)
                 {
-                    Header = dataColumn.ColumnName,
-                    //Header = cmd.ExecuteCellSet(),
-                    Binding = new Binding("[" + dataColumn.ColumnName + "]")
-                });
+                    connectionString = fileContent;
+                }
+                connection = new AdomdConnection(connectionString);
             }
-            //dataGrid1.ItemsSource = dataSet.Tables[0].DefaultView;
-            dataGrid1.ItemsSource = table.DefaultView;
+            catch (Exception readException)
+            {
+                MessageBox.Show("Unable to load Connection.txt file, try again. Message: " + readException.Message, "Load connection file error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Environment.Exit(0);
+            }
+            return connection;
         }
 
-        private void mdxBtn_Click(object sender, RoutedEventArgs e)
+        private void QueryToTable(string query)
         {
-            connection.Open();
-            string query = tbInput.Text;
-            zapytanieDoTabeli(query);
-            connection.Close();
+            try
+            {
+                connection.Open();
+                QueryInput.Text = query;
+                AdomdCommand cmd = new AdomdCommand(query, connection);
+                DataSet dataSet = new DataSet
+                {
+                    EnforceConstraints = true
+                };
+                DataTable dt = new DataTable();
+                try
+                {
+                    dt.Load(cmd.ExecuteReader());
+                }
+                catch (Exception)
+                {
+
+                }
+                dataSet.Tables.Add(dt);
+                var table = dataSet.Tables[0];
+                ResultDataGrid.Columns.Clear();
+                foreach (DataColumn dataColumn in dataSet.Tables[0].Columns)
+                {
+                    ResultDataGrid.Columns.Add(new DataGridTextColumn
+                    {
+                        Header = dataColumn.ColumnName,
+                        Binding = new Binding("[" + dataColumn.ColumnName + "]")
+                    });
+                }
+                ResultDataGrid.ItemsSource = table.DefaultView;
+            }
+            catch (Exception dbException)
+            {
+                MessageBox.Show("Database connection error. Message: " + dbException.Message, "Database connection error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                connection.Close();
+            }
         }
 
-        private void btnDost1_Click(object sender, RoutedEventArgs e)
+        private void ExecuteQueryBtn_Click(object sender, RoutedEventArgs e)
         {
-            connection.Open();
+            string query = QueryInput.Text;
+            QueryToTable(query);
+        }
+        
+        private void VendorBtn1_Click(object sender, RoutedEventArgs e)
+        {
             string query =
                 "with member measures.TotalSales as '[Measures].[Quantity] * [Measures].[Unit Price]' " +
                 "select " +
@@ -136,13 +152,11 @@ namespace ApkaDoHurtowni
                 "{ORDER([Products].[product name].Children, [Measures].[TotalSales], BDESC)} " +
                 "on rows " +
                 "from[Order_Products_Suppl]";
-            zapytanieDoTabeli(query);
-            connection.Close();
+            QueryToTable(query);
         }
 
-        private void btnDost2_Click(object sender, RoutedEventArgs e)
+        private void VendorBtn2_Click(object sender, RoutedEventArgs e)
         {
-            connection.Open();
             string query =
                 "with member measures.TotalPrice as '[Measures].[Quantity] * [Measures].[Unit Price]' " +
                 "select " +
@@ -152,14 +166,12 @@ namespace ApkaDoHurtowni
                 "{Order([Hierarchy].[Category Name].Members, measures.TotalPrice, BDESC)} " +
                 "on rows " +
                 "from[Order_Products_Suppl]";
-            zapytanieDoTabeli(query);
-            connection.Close();
+            QueryToTable(query);
         }
 
-        private void btnDost3_Click(object sender, RoutedEventArgs e)
+        private void VendorBtn3_Click(object sender, RoutedEventArgs e)
         {
-            string category = comboCategory.Text;
-            connection.Open();
+            string category = CategoryComboBox.Text;
             string query =
                 "with member measures.TotalPrice as '[Measures].[Quantity] * [Measures].[Unit Price]' " +
                 "select " +
@@ -171,13 +183,11 @@ namespace ApkaDoHurtowni
                 "on rows " +
                 "from[Order_Products_Suppl] " +
                 "where[Products].[Category Name].[" + category + "]";
-            zapytanieDoTabeli(query);
-            connection.Close();
+            QueryToTable(query);
         }
 
-        private void btnDost4_Click(object sender, RoutedEventArgs e)
+        private void VendorBtn4_Click(object sender, RoutedEventArgs e)
         {
-            connection.Open();
             string query =
                 "with member measures.TotalPrice as '[Measures].[Quantity] * [Measures].[Unit Price]' " +
                 "select " +
@@ -188,13 +198,11 @@ namespace ApkaDoHurtowni
                 "} " +
                 "on rows " +
                 "from[Order_Products_Suppl]";
-            zapytanieDoTabeli(query);
-            connection.Close();
+            QueryToTable(query);
         }
 
-        private void btnSprz1_Click(object sender, RoutedEventArgs e)
+        private void SaleBtn1_Click(object sender, RoutedEventArgs e)
         {
-            connection.Open();
             string query =
                 "select " +
                 "{[Measures].[Quantity] " +
@@ -209,25 +217,23 @@ namespace ApkaDoHurtowni
                 "{[Orders].[Employees - Address].Children}) " +
                 "on rows " +
                 "from[CubeCustomers]";
-            zapytanieDoTabeli(query);
-            connection.Close();
+            QueryToTable(query);
         }
 
-        private void btnSprz1_1_Click(object sender, RoutedEventArgs e)
+        private void SaleBtn4_Click(object sender, RoutedEventArgs e)
         {
-            string zmiennaCombo;
-            string iloscSztuk = tbSztuki.Text;
+            string greaterOrLessVariable;
+            string quantity = QuantityTextBox.Text;
 
-            if (comboMniejWiecej1.Text == "Powyżej")
+            if (GreaterOrLessComboBox.Text == "Powyżej")
             {
-                zmiennaCombo = ">";
+                greaterOrLessVariable = ">";
             }
             else
             {
-                zmiennaCombo = "<";
+                greaterOrLessVariable = "<";
             }
 
-            connection.Open();
             string query =
                 "select " +
                 "{[Measures].[Quantity] " +
@@ -239,49 +245,45 @@ namespace ApkaDoHurtowni
                 "{[Orders].[Employees - Country].Children}, " +
                 "{[Orders].[Employees - City].Children}, " +
                 "{[Orders].[Employees - Address].Children}), ([Measures].[Quantity] " +
-                zmiennaCombo + " " + iloscSztuk + "))" +
+                greaterOrLessVariable + " " + quantity + "))" +
                 "on rows " +
                 "from[CubeCustomers]";
-            zapytanieDoTabeli(query);
-            connection.Close();
+            QueryToTable(query);
         }
 
-        private void btnSprz1_2_Click(object sender, RoutedEventArgs e)
+        private void SaleBtn5_Click(object sender, RoutedEventArgs e)
         {
-            string zmiennaCombo;
-            string iloscRekordow = tbRekordy1.Text;
+            string topOrBottomVariable;
+            string numberOfRecords = RecordsTextBox.Text;
 
-            if (comboLepsiGorsi1.Text == "Najlepsi")
+            if (TopOrBottomComboBox.Text == "Najlepsi")
             {
-                zmiennaCombo = "TOPCOUNT";
+                topOrBottomVariable = "TOPCOUNT";
             }
             else
             {
-                zmiennaCombo = "BOTTOMCOUNT";
+                topOrBottomVariable = "BOTTOMCOUNT";
             }
 
-            connection.Open();
             string query =
                 "select " +
                 "{[Measures].[Quantity] " +
                 "} " +
                 "on columns, " +
-                zmiennaCombo + "(crossjoin( " +
+                topOrBottomVariable + "(crossjoin( " +
                 "{[Orders].[Employee ID].Children}, " +
                 "{[Orders].[Last Name].Children}, " +
                 "{[Orders].[Employees - Country].Children}, " +
                 "{[Orders].[Employees - City].Children}, " +
-                "{[Orders].[Employees - Address].Children}), " + iloscRekordow +
+                "{[Orders].[Employees - Address].Children}), " + numberOfRecords +
                 ", ([Measures].[Quantity])) " +
                 "on rows " +
                 "from[CubeCustomers]";
-            zapytanieDoTabeli(query);
-            connection.Close();
+            QueryToTable(query);
         }
 
-        private void btnSprz2_Click(object sender, RoutedEventArgs e)
+        private void SaleBtn2_Click(object sender, RoutedEventArgs e)
         {
-            connection.Open();
             string query =
                 "select " +
                 "{ [MEASURES].[Quantity] " +
@@ -292,43 +294,39 @@ namespace ApkaDoHurtowni
                 "{([Orders].[Last Name].Children)}, " +
                 "{([Orders].[Employee ID].Children)}) on rows " +
                 "from[CubeCustomers]";
-            zapytanieDoTabeli(query);
-            connection.Close();
+            QueryToTable(query);
         }
 
-        private void btnSprz2_1_Click(object sender, RoutedEventArgs e)
+        private void SaleBtn6_Click(object sender, RoutedEventArgs e)
         {
-            string zmiennaCombo;
-            string iloscRekordow = tbRekordy2.Text;
+            string topOrBottomVariable;
+            string numberOfRecords = Records2TextBox.Text;
 
-            if (comboMniejWiecej2.Text == "Najwięcej")
+            if (TopOrBottom2ComboBox.Text == "Najwięcej")
             {
-                zmiennaCombo = "TOPCOUNT";
+                topOrBottomVariable = "TOPCOUNT";
             }
             else
             {
-                zmiennaCombo = "BOTTOMCOUNT";
+                topOrBottomVariable = "BOTTOMCOUNT";
             }
 
-            connection.Open();
             string query =
                 "select " +
                 "{[MEASURES].[Quantity] " +
                 "} " +
                 "on columns, " +
-                zmiennaCombo + "(crossjoin( " +
+                topOrBottomVariable + "(crossjoin( " +
                 "{([Orders].[Customers - Company Name].Children)}, " +
                 "{([Orders].[Last Name].Children)}, " +
-                "{([Orders].[Employee ID].Children)}), " + iloscRekordow +
+                "{([Orders].[Employee ID].Children)}), " + numberOfRecords +
                 ", ([MEASURES].[Quantity])) on rows " +
                 "from[CubeCustomers]";
-            zapytanieDoTabeli(query);
-            connection.Close();
+            QueryToTable(query);
         }
 
-        private void btnSprz3_Click(object sender, RoutedEventArgs e)
+        private void SaleBtn3_Click(object sender, RoutedEventArgs e)
         {
-            connection.Open();
             string query =
                 "with member measures.TotalSales as '[Measures].[Quantity] * [Measures].[Unit Price]' " +
                 "select " +
@@ -340,62 +338,58 @@ namespace ApkaDoHurtowni
                 "{([Orders].[City].Children) }, " +
                 "{([Products].[Category Name].Children)}) on rows " +
                 "from[CubeCustomers]";
-            zapytanieDoTabeli(query);
-            connection.Close();
+            QueryToTable(query);
         }
 
-        private void btnKoszt1_Click(object sender, RoutedEventArgs e)
+        private void VendorCostsBtn1_Click(object sender, RoutedEventArgs e)
         {
-            string zmiennaRok;
-            string zmiennaKwartal;
-            string zmiennaMiesiac;
+            string yearVariable;
+            string quarterVariable;
+            string monthVariable;
 
-            if (comboYear.Text == "Wszystkie lata")
+            if (YearComboBox.Text == "Wszystkie lata")
             {
-                zmiennaRok = "Children";
+                yearVariable = "Children";
             }
             else
             {
-                zmiennaRok = "[Calendar " + comboYear.Text + "]";
+                yearVariable = "[Calendar " + YearComboBox.Text + "]";
             }
 
-            if (comboQuarter.Text == "Wszystkie kwartaly")
+            if (QuarterComboBox.Text == "Wszystkie kwartaly")
             {
-                zmiennaKwartal = "Children";
+                quarterVariable = "Children";
             }
             else
             {
-                zmiennaKwartal = "[" + comboQuarter.Text + ", " + comboYear.Text + "]";
+                quarterVariable = "[" + QuarterComboBox.Text + ", " + YearComboBox.Text + "]";
             }
 
-            if (comboMonth.Text == "Wszystkie miesiace" || comboMonth.Text == "Caly kwartal")
+            if (MonthComboBox.Text == "Wszystkie miesiace" || MonthComboBox.Text == "Caly kwartal")
             {
-                zmiennaMiesiac = "Children";
+                monthVariable = "Children";
             }
             else
             {
-                zmiennaMiesiac = "[" + comboMonth.Text + " " + comboYear.Text + "]";
+                monthVariable = "[" + MonthComboBox.Text + " " + YearComboBox.Text + "]";
             }
 
-            connection.Open();
             string query =
                 "select " +
                 "NON EMPTY( [Measures].[Freight])on columns, " +
                 "NON EMPTY(crossjoin( " +
-                "{ ([TimeOrder].[Year]." + zmiennaRok + ")}, " +
-                "{ ([TimeOrder].[Quarter]." + zmiennaKwartal + ")}, " +
-                "{ ([TimeOrder].[Month]." + zmiennaMiesiac + ")}, " +
+                "{ ([TimeOrder].[Year]." + yearVariable + ")}, " +
+                "{ ([TimeOrder].[Quarter]." + quarterVariable + ")}, " +
+                "{ ([TimeOrder].[Month]." + monthVariable + ")}, " +
                 "{ ([Shippers].[Company Name].Children)}, " +
                 "{ ([Customers].[Company Name].Children)})) on rows " +
                 "from[CubeTime]";
-            zapytanieDoTabeli(query);
-            connection.Close();
+            QueryToTable(query);
         }
 
-        private void btnProd1_Click(object sender, RoutedEventArgs e)
+        private void ProductsBtn1_Click(object sender, RoutedEventArgs e)
         {
-            connection.Open();
-            string zmienna;
+            string variableInQuery;
             string query = 
                 "select " +
                 "{[Measures].[Units In Stock] " +
@@ -407,94 +401,92 @@ namespace ApkaDoHurtowni
                 "{[Supplier].[Company Name].Children})) on rows " +
                 "from[CubeProducts] " +
                 "where[Products].[Discontinued].[";
-            if (radioWycofane.IsChecked == true)
+            if (DiscontinuedRadioButton.IsChecked == true)
             {
-                zmienna = "True";
-                query = query + zmienna + "]";
-                zapytanieDoTabeli(query);
+                variableInQuery = "True";
+                query = query + variableInQuery + "]";
             }
-            if (radioProdukowane.IsChecked == true)
+            if (ProducedRadioButton.IsChecked == true)
             {
-                zmienna = "False";
-                query = query + zmienna + "]";
-                zapytanieDoTabeli(query);
+                variableInQuery = "False";
+                query = query + variableInQuery + "]";
             }
-            connection.Close();
+            QueryToTable(query);
         }
 
-        private void comboQuarter_DropDownClosed(object sender, EventArgs e)
+        private void QuarterComboBox_DropDownClosed(object sender, EventArgs e)
         {
-            if (comboQuarter.Text == "Wszystkie kwartaly")
+            if (QuarterComboBox.Text == "Wszystkie kwartaly")
             {
-                comboMonth.Items.Clear();
-                comboMonth.Items.Add(allMonths);
+                MonthComboBox.Items.Clear();
+                MonthComboBox.Items.Add(allMonths);
 
                 allMonths.IsSelected = true;
             }
-            if (comboQuarter.Text == "Quarter 1")
+            if (QuarterComboBox.Text == "Quarter 1")
             {
-                comboMonth.Items.Clear();
-                comboMonth.Items.Add(allMonthsQuarter);
-                comboMonth.Items.Add(january);
-                comboMonth.Items.Add(february);
-                comboMonth.Items.Add(march);
+                MonthComboBox.Items.Clear();
+                MonthComboBox.Items.Add(allMonthsQuarter);
+                MonthComboBox.Items.Add(january);
+                MonthComboBox.Items.Add(february);
+                MonthComboBox.Items.Add(march);
 
                 allMonthsQuarter.IsSelected = true;
             }
-            if (comboQuarter.Text == "Quarter 2")
+            if (QuarterComboBox.Text == "Quarter 2")
             {
-                comboMonth.Items.Clear();
-                comboMonth.Items.Add(allMonthsQuarter);
-                comboMonth.Items.Add(april);
-                comboMonth.Items.Add(may);
-                comboMonth.Items.Add(june);
+                MonthComboBox.Items.Clear();
+                MonthComboBox.Items.Add(allMonthsQuarter);
+                MonthComboBox.Items.Add(april);
+                MonthComboBox.Items.Add(may);
+                MonthComboBox.Items.Add(june);
 
                 allMonthsQuarter.IsSelected = true;
             }
-            if (comboQuarter.Text == "Quarter 3")
+            if (QuarterComboBox.Text == "Quarter 3")
             {
-                comboMonth.Items.Clear();
-                comboMonth.Items.Add(allMonthsQuarter);
-                comboMonth.Items.Add(july);
-                comboMonth.Items.Add(august);
-                comboMonth.Items.Add(september);
+                MonthComboBox.Items.Clear();
+                MonthComboBox.Items.Add(allMonthsQuarter);
+                MonthComboBox.Items.Add(july);
+                MonthComboBox.Items.Add(august);
+                MonthComboBox.Items.Add(september);
 
                 allMonthsQuarter.IsSelected = true;
             }
-            if (comboQuarter.Text == "Quarter 4")
+            if (QuarterComboBox.Text == "Quarter 4")
             {
-                comboMonth.Items.Clear();
-                comboMonth.Items.Add(allMonthsQuarter);
-                comboMonth.Items.Add(october);
-                comboMonth.Items.Add(november);
-                comboMonth.Items.Add(december);
+                MonthComboBox.Items.Clear();
+                MonthComboBox.Items.Add(allMonthsQuarter);
+                MonthComboBox.Items.Add(october);
+                MonthComboBox.Items.Add(november);
+                MonthComboBox.Items.Add(december);
 
                 allMonthsQuarter.IsSelected = true;
             }
         }
 
-        private void comboYear_DropDownClosed(object sender, EventArgs e)
+        private void YearComboBox_DropDownClosed(object sender, EventArgs e)
         {
-            if (comboYear.Text == "Wszystkie lata")
+            if (YearComboBox.Text == "Wszystkie lata")
             {
-                comboQuarter.Items.Clear();
-                comboQuarter.Items.Add(allQuarters);
+                QuarterComboBox.Items.Clear();
+                QuarterComboBox.Items.Add(allQuarters);
 
                 allQuarters.IsSelected = true;
 
-                comboMonth.Items.Clear();
-                comboMonth.Items.Add(allMonths);
+                MonthComboBox.Items.Clear();
+                MonthComboBox.Items.Add(allMonths);
 
                 allMonths.IsSelected = true;
             }
             else
             {
-                comboQuarter.Items.Clear();
-                comboQuarter.Items.Add(allQuarters);
-                comboQuarter.Items.Add(quarter1);
-                comboQuarter.Items.Add(quarter2);
-                comboQuarter.Items.Add(quarter3);
-                comboQuarter.Items.Add(quarter4);
+                QuarterComboBox.Items.Clear();
+                QuarterComboBox.Items.Add(allQuarters);
+                QuarterComboBox.Items.Add(quarter1);
+                QuarterComboBox.Items.Add(quarter2);
+                QuarterComboBox.Items.Add(quarter3);
+                QuarterComboBox.Items.Add(quarter4);
 
                 allQuarters.IsSelected = true;
             }
