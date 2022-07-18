@@ -1,1 +1,1 @@
-DataSource=localhost; Catalog=ProjektNaHurtownieNorthwind
+DataSource=http://windowsserver/OLAP/msmdpump.dll; Catalog=ProjektNaHurtownieNorthwind; User ID=windowsserver\administrator; Password=***;
